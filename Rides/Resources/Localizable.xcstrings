@@ -1,0 +1,59 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "%@" : {
+
+    },
+    "Color: %@" : {
+
+    },
+    "Enter number of vehicles" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter number of vehicles"
+          }
+        }
+      }
+    },
+    "Get Vehicles" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Get Vehicles"
+          }
+        }
+      }
+    },
+    "Type: %@" : {
+
+    },
+    "Vehicle Details" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vehicle Details"
+          }
+        }
+      }
+    },
+    "Vehicle List" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vehicle List"
+          }
+        }
+      }
+    },
+    "VIN: %@" : {
+
+    }
+  },
+  "version" : "1.0"
+}
