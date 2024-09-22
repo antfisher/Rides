@@ -36,6 +36,8 @@ struct VehicleListView: View {
                 .cornerRadius(8)
             }
             .padding()
+            // Sorting and ordering
+            SortingView(sorting: $viewModel.sorting)
             // Vehicle list
             List($viewModel.vehicles) { vehicle in
                 VehicleListItemView(vehicle: vehicle.wrappedValue)

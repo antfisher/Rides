@@ -20,6 +20,7 @@ extension VehicleListView {
         @Published var numberOfVehicles: String = ""
         @Published var inputIsValid: Bool = false
         @Published var vehicles: [Vehicle] = []
+        @Published var sorting = Sorting.default
         
         private var size: Int {
             Int(numberOfVehicles) ?? 0
@@ -30,14 +31,24 @@ extension VehicleListView {
             self.coordinator = coordinator
             self.networkService = networkService
             
+            // Input validation
             $numberOfVehicles
                 .removeDuplicates()
                 .dropFirst()
                 .sink { [weak self] sizeString in
                     guard let self else { return }
                     self.inputIsValid = self.validateSize(sizeString: sizeString)
-            }
-            .store(in: &cancellables)
+                }
+                .store(in: &cancellables)
+            
+            $sorting
+                .removeDuplicates()
+                .dropFirst()
+                .sink { [weak self] sorting in
+                    guard let self else { return }
+                    self.vehicles = sort(vehicles: self.vehicles, sorting: sorting)
+                }
+                .store(in: &cancellables)
         }
         
         func showDetails(_ vehicle: Vehicle) {
@@ -45,17 +56,16 @@ extension VehicleListView {
         }
         
         @MainActor
-        func getVehicles() {
-            Task {
+        func getVehicles() async {
                 do {
-                    vehicles = try await networkService.getVehiclesList(size: size).sorted(by: { $0.vin < $1.vin })
+                    let vehicles = try await networkService.getVehiclesList(size: size)
+                    self.vehicles = sort(vehicles: vehicles, sorting: sorting)
                     numberOfVehicles = ""
                 } catch let error as ApiError {
                     print(error.message)
                 } catch {
                     print(error.localizedDescription)
                 }
-            }
         }
         
         private func validateSize(sizeString: String) -> Bool {
@@ -68,8 +78,18 @@ extension VehicleListView {
             guard Int(sizeString) != nil else {
                 return false
             }
-
+            
             return true
+        }
+        
+        private func sort(vehicles: [Vehicle], sorting: Sorting) -> [Vehicle] {
+        
+            switch sorting.parameter {
+            case .vin:
+                vehicles.sorted { $0.vin.compare($1.vin) == sorting.order.comparison}
+            case .carType:
+                vehicles.sorted { $0.carType.compare($1.carType) == sorting.order.comparison}
+            }
         }
     }
 }
