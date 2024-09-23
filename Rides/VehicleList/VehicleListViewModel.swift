@@ -19,6 +19,7 @@ extension VehicleListView {
         
         @Published var numberOfVehicles: String = ""
         @Published var inputIsValid: Bool = false
+        @Published var inputError: String?
         @Published var vehicles: [Vehicle] = []
         @Published var sorting = Sorting.default
         
@@ -72,13 +73,26 @@ extension VehicleListView {
             
             // Check if the stringValue is not empty
             guard !sizeString.isEmpty else {
+                inputError = nil
                 return false
             }
             // Check if the stringValue can be casted to Int
-            guard Int(sizeString) != nil else {
+            guard let size = Int(sizeString) else {
+                inputError = "Enter a valid number"
                 return false
             }
             
+            guard size <= 100 else {
+                inputError = "Size must be less than or equal to 100"
+                return false
+            }
+            
+            guard size >= 1 else {
+                inputError = "Size must be at least 1"
+                return false
+            }
+            
+            inputError = nil
             return true
         }
         

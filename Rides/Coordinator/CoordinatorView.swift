@@ -20,7 +20,7 @@ struct CoordinatorView: View {
                     coordinator.build(page: page)
                 }
         }
-        .tint(.black)
+        .tint(.secondary)
         .environmentObject(coordinator)
     }
 }

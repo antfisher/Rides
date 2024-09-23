@@ -19,44 +19,52 @@ struct VehicleListView: View {
     
     var body: some View {
         VStack {
-            // TextInput and Button
-            HStack(alignment: .center, spacing: 10) {
-                TextField("Enter number of vehicles", text: $viewModel.numberOfVehicles)
-                    .focused($focusedField, equals: .numberInput)
-                    .keyboardType(.numberPad)
-                    .padding(14)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 8)
-                            .stroke(viewModel.inputIsValid ? Color.green : Color.gray, lineWidth: 2)
-                    )
-                    .toolbar {
-                        ToolbarItem(placement: .keyboard) {
-                            Button("Done") {
-                                focusedField = nil
+            VStack {
+                // TextInput and Button
+                HStack(alignment: .center, spacing: 10) {
+                    TextField("Enter number of vehicles", text: $viewModel.numberOfVehicles)
+                        .focused($focusedField, equals: .numberInput)
+                        .keyboardType(.numberPad)
+                        .padding(14)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 8)
+                                .stroke(viewModel.inputIsValid ? Color.green : Color.gray, lineWidth: 2)
+                        )
+                        .toolbar {
+                            ToolbarItem(placement: .keyboard) {
+                                Button("Done") {
+                                    focusedField = nil
+                                }
+                                .foregroundStyle(.secondary)
+                                .frame(alignment: .trailing )
                             }
-                            .foregroundStyle(.secondary)
-                            .frame(alignment: .trailing )
                         }
+                    Button {
+                        Task {
+                            isLoading = true
+                            await viewModel.getVehicles()
+                            isLoading = false
+                        }
+                        focusedField = nil
+                    } label: {
+                        Text("Get Vehicles")
                     }
-                Button {
-                    Task {
-                        isLoading = true
-                        await viewModel.getVehicles()
-                        isLoading = false
-                    }
-                    focusedField = nil
-                } label: {
-                    Text("Get Vehicles")
+                    // Disable button when input value is not valid (not a number)
+                    .disabled(!viewModel.inputIsValid)
+                    .opacity(viewModel.inputIsValid ? 1 : 0.5)
+                    .padding(16)
+                    .foregroundStyle(.white)
+                    .background(Color.green)
+                    .cornerRadius(8)
                 }
-                // Disable button when input value is not valid (not a number)
-                .disabled(!viewModel.inputIsValid)
-                .opacity(viewModel.inputIsValid ? 1 : 0.5)
-                .padding(16)
-                .foregroundStyle(.white)
-                .background(Color.green)
-                .cornerRadius(8)
+                .padding([.horizontal, .top])
+                
+                if let errorText = viewModel.inputError {
+                    Text(errorText)
+                        .foregroundStyle(.red)
+                        .font(.footnote)
+                }
             }
-            .padding()
             // Sorting and ordering
             SortingView(sorting: $viewModel.sorting)
             // Vehicle list

@@ -28,7 +28,7 @@ struct SortingView: View {
             .pickerStyle(.segmented)
             .frame(maxWidth: 80)
         }
-        .padding(.horizontal)
+        .padding([.horizontal, .top])
     }
 }
 
